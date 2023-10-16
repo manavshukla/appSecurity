@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
                 String randomPassword = generateRandomString(); // Generate a random password
                 encodedPassword = passwordEncoder.encode(randomPassword);
                 user.setPassword(encodedPassword);
-                user.setStatus(1);
+
                 User save = userRepo.save(user);
 
                 System.out.println(randomPassword);
@@ -84,6 +84,7 @@ public class UserServiceImpl implements UserService {
                 //user.setRoles(role.get());
                 encodedPassword = passwordEncoder.encode(user.getPassword());
                 user.setPassword(encodedPassword);
+                user.setStatus(1);
                 User save = userRepo.save(user);
             }
 

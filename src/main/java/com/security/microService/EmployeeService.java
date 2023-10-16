@@ -346,4 +346,17 @@ public class EmployeeService {
             System.out.println(e);
         }
     }
+
+
+    public EmployeeDto getEmployeeByUserId(String id) {
+        try {
+
+            String url = api + "/user/" + id;
+            return restTemplate.getForObject(url, EmployeeDto.class);
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
 }

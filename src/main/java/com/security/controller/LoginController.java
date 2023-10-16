@@ -57,7 +57,7 @@ public class LoginController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpSession session) {
+    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
         try {
             int status = 0;
             Authentication authentication = authenticationManager.authenticate(
@@ -66,9 +66,10 @@ public class LoginController {
             if (authenticate(authRequest.getUsername(), authRequest.getPassword())) {
                 AccessDto accessDto = new AccessDto();
                 User user = userService.getUserByUsername(authRequest.getUsername());
-                String token = userService.login(authRequest.getUsername(), authRequest.getPassword());
-                EmployeeDto statusUser = userService.getEmployeeByUserIdAndStatus(user.getId(), status);
+                EmployeeDto statusUser = employeeService.getEmployeeByUserId(user.getId());
+
                 if (statusUser.getStatus() == 1) {
+                    String token = userService.login(authRequest.getUsername(), authRequest.getPassword());
                     JwtToken token1 = new JwtToken();
                     token1.setStartDate(LocalDateTime.now());
                     token1.setStatus(1);
@@ -79,9 +80,13 @@ public class LoginController {
                     accessDto.setUserId(user.getId());
                     accessDto.setRoleName(user.getRoles().getRoleName());
                     accessDto.setEmployeeName(user.getUsername());
+                    HttpSession session = request.getSession();
                     session.setAttribute("userId", accessDto.getUserId());
                     session.setAttribute("roleName", accessDto.getRoleName());
+                    System.out.println(session);
                     return ResponseEntity.ok(accessDto);
+                } else {
+                    return ResponseEntity.badRequest().body("User is not Active");
                 }
             }
         } catch (Exception e) {
@@ -150,7 +155,7 @@ public class LoginController {
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<?> signUp(@RequestBody User user) {
+    public ResponseEntity<?> signUp(@RequestBody User user, HttpServletRequest request) {
         try {
 
             ResponseEntity<?> valid = validator.valid(user);
@@ -164,17 +169,25 @@ public class LoginController {
             Optional<Role> roleDetails = roleRepo.findById(roleId);
 //            EmployeeDto employeeDto=new EmployeeDto();
 //            employeeDt
-            if (roleId != null || roleDetails.get().getRoleName().equals("EMPLOYEE")) {
+            if (roleDetails.get().getRoleName().equals("EMPLOYEE")) {
                 //employeeService.reg(user);
                 Employee employee = new Employee();
                 employee.setUserId(user.getId());
                 employee.setName(user.getUsername());
                 employee.setEmailAddress(user.getEmail());
                 employee.setRole(roleId);
-                employee.setStatus(1);
+                employee.setStatus(user.getStatus());
                 System.out.println(employee);
                 employeeService.createRegistartionEmployee(employee);
 
+            } else {
+                EmployeeDto employeeDto = new EmployeeDto();
+                employeeDto.setUserId(user.getId());
+                employeeDto.setName((user.getUsername()));
+                employeeDto.setEmailAddress(user.getEmail());
+                employeeDto.setRole(roleId);
+                employeeDto.setStatus(user.getStatus());
+                employeeService.createEmployee(employeeDto, request, null, null);
             }
             // }
 

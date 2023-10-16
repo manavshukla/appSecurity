@@ -209,4 +209,16 @@ public class EmployeeController {
     }
 
 
+    @GetMapping("/employee-user/{id}")
+    public ResponseEntity<?> getEmployeeData(@PathVariable String id) {
+        try {
+
+            EmployeeDto employeeData = employeeService.getEmployeeByUserId(id);
+            return ResponseEntity.ok().body(employeeData);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to load");
+        }
+    }
+
+
 }
