@@ -25,7 +25,7 @@ public class EmployeeDto {
     private Float experience;
     private String joiningDate;
     private Float availableLeaves;
-    private Integer salary;
+    private Long salary;
     private String nextAppraisalDate;
     private String dateOfBirth;
     private String bloodGroup;

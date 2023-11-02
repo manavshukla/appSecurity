@@ -88,4 +88,17 @@ public class TimesheetService {
         }
     }
 
+    public String getTimesheetByEmpId(String employeeId, int page, int pageSize) {
+        System.out.println(employeeId);
+        try {
+            String url = api + "/findByEmpId/" + employeeId + "?page=" + page + "&pageSize=" + pageSize;
+            return restTemplate.getForObject(url, String.class);
+
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
 }

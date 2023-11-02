@@ -5,6 +5,7 @@ import com.security.microService.TimesheetService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ public class TimeSheetController {
             return ResponseEntity.ok().body("\"timesheet Created\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not created");
+            return ResponseEntity.badRequest().body("\"Not created\"");
         }
     }
 
@@ -44,7 +45,7 @@ public class TimeSheetController {
             return ResponseEntity.ok().body(leaveData);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
 
@@ -56,7 +57,7 @@ public class TimeSheetController {
             return ResponseEntity.ok().body("\"timesheet Update\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("not update");
+            return ResponseEntity.badRequest().body("\"not update\"");
         }
     }
 
@@ -65,10 +66,10 @@ public class TimeSheetController {
         try {
 
             timesheetService.deleteLeave(id);
-            return ResponseEntity.ok().body("TimeSheet Delete");
+            return ResponseEntity.ok().body("\"TimeSheet Delete\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not delete");
+            return ResponseEntity.badRequest().body("\"Not delete\"");
         }
     }
 
@@ -80,11 +81,27 @@ public class TimeSheetController {
             if (timesheetByID != null) {
                 return ResponseEntity.ok().body(timesheetByID);
             } else {
-                return ResponseEntity.badRequest().body("id not found");
+                return ResponseEntity.badRequest().body("\"id not found\"");
             }
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not found");
+            return ResponseEntity.badRequest().body("\"Not found\"");
         }
+    }
+
+
+    @GetMapping("/timesheet-empId/{id}")
+    public ResponseEntity<?> getTimesheetByEmpId(@PathVariable("id") String employeeId,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "3") int pageSize) {
+
+        String timesheetByEMpId = timesheetService.getTimesheetByEmpId(employeeId, page, pageSize);
+        if (timesheetByEMpId != null) {
+            return ResponseEntity.ok().body(timesheetByEMpId);
+        } else {
+            return ResponseEntity.badRequest().body("\"id not found\"");
+        }
+
+
     }
 }

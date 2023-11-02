@@ -1,5 +1,6 @@
 package com.security.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.context.annotation.Bean;
@@ -7,12 +8,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Configuration
 @RestController
 public class GatewayConfig {
 
+    @Autowired
+    private HttpServletRequest request;
+
     @Bean
     public RouteLocator customRouteLocator() {
+
         return () -> Flux.just(
                 Route.async()
                         .id("route1")

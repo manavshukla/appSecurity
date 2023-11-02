@@ -1,7 +1,8 @@
 package com.security.validation;
 
-import com.security.model.Role;
 import com.security.model.User;
+import com.security.repo.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;

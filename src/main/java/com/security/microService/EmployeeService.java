@@ -168,6 +168,7 @@ public class EmployeeService {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            System.out.println(employeeDto.getUserId() + " userId");
             body.add("userId", new HttpEntity<>(employeeDto.getUserId()));
             body.add("employeeId", new HttpEntity<>(employeeDto.getEmployeeId()));
             body.add("name", new HttpEntity<>(employeeDto.getName()));
@@ -289,7 +290,7 @@ public class EmployeeService {
         try {
 
             String url = api + "/" + id;
-            restTemplate.delete(url, id);
+            restTemplate.put(url, id);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -348,10 +349,10 @@ public class EmployeeService {
     }
 
 
-    public EmployeeDto getEmployeeByUserId(String id) {
+    public EmployeeDto getEmployeeByUserId(String userId) {
         try {
 
-            String url = api + "/user/" + id;
+            String url = api + "/user/" + userId;
             return restTemplate.getForObject(url, EmployeeDto.class);
         } catch (Exception e) {
             System.out.println(e);

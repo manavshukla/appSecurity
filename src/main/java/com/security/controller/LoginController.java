@@ -12,7 +12,10 @@ import com.security.repo.UserRepo;
 import com.security.service.UserDetailsServiceImpl;
 import com.security.service.UserServiceImpl;
 import com.security.validation.CustomValidator;
+import com.security.validation.ExitsData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,10 +45,11 @@ public class LoginController {
     private final RoleRepo roleRepo;
 
     private final CustomValidator validator;
+    private final ExitsData exitsData;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public LoginController(UserServiceImpl userService, UserDetailsServiceImpl userDetailsService, JwtTokenProvider jwtTokenProvider, JwtTokenRepo jwtTokenRepo, UserRepo userRepo, JwtTokenProvider jwtTokenProvider1, AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService1, EmployeeService employeeService, RoleRepo roleRepo, CustomValidator validator) {
+    public LoginController(UserServiceImpl userService, UserDetailsServiceImpl userDetailsService, JwtTokenProvider jwtTokenProvider, JwtTokenRepo jwtTokenRepo, UserRepo userRepo, JwtTokenProvider jwtTokenProvider1, AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService1, EmployeeService employeeService, RoleRepo roleRepo, CustomValidator validator, ExitsData exitsData) {
         this.userService = userService;
         this.jwtTokenRepo = jwtTokenRepo;
         this.userRepo = userRepo;
@@ -53,6 +57,7 @@ public class LoginController {
         this.employeeService = employeeService;
         this.roleRepo = roleRepo;
         this.validator = validator;
+        this.exitsData = exitsData;
     }
 
 
@@ -60,39 +65,52 @@ public class LoginController {
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
         try {
             int status = 0;
+//            Optional<User> userRepoById = userRepo.findById(userId);
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             if (authenticate(authRequest.getUsername(), authRequest.getPassword())) {
                 AccessDto accessDto = new AccessDto();
                 User user = userService.getUserByUsername(authRequest.getUsername());
-                EmployeeDto statusUser = employeeService.getEmployeeByUserId(user.getId());
-
-                if (statusUser.getStatus() == 1) {
-                    String token = userService.login(authRequest.getUsername(), authRequest.getPassword());
-                    JwtToken token1 = new JwtToken();
-                    token1.setStartDate(LocalDateTime.now());
-                    token1.setStatus(1);
-                    token1.setToken(token);
-                    jwtTokenRepo.save(token1);
-                    accessDto.setRoleId(user.getRoleId());
-                    accessDto.setToken(token);
-                    accessDto.setUserId(user.getId());
-                    accessDto.setRoleName(user.getRoles().getRoleName());
-                    accessDto.setEmployeeName(user.getUsername());
-                    HttpSession session = request.getSession();
-                    session.setAttribute("userId", accessDto.getUserId());
-                    session.setAttribute("roleName", accessDto.getRoleName());
-                    System.out.println(session);
-                    return ResponseEntity.ok(accessDto);
-                } else {
-                    return ResponseEntity.badRequest().body("User is not Active");
+                String userId = user.getId();
+                if (user.getRoles().getRoleName().equals("EMPLOYEE")) {
+                    EmployeeDto statusUser = employeeService.getEmployeeByUserId(user.getId());
+                    if (statusUser.getStatus() == 1) {
+                        String token = userService.login(authRequest.getUsername(), authRequest.getPassword(), userId);
+                        JwtToken token1 = new JwtToken();
+                        token1.setStartDate(LocalDateTime.now());
+                        token1.setStatus(1);
+                        token1.setToken(token);
+                        jwtTokenRepo.save(token1);
+                        accessDto.setRoleId(user.getRoleId());
+                        accessDto.setToken(token);
+                        accessDto.setUserId(user.getId());
+                        accessDto.setRoleName(user.getRoles().getRoleName());
+                        accessDto.setEmployeeName(user.getName());
+                        accessDto.setName(user.getName());
+                        return ResponseEntity.ok(accessDto);
+                    }
                 }
+                String token = userService.login(authRequest.getUsername(), authRequest.getPassword(), userId);
+                JwtToken token1 = new JwtToken();
+                token1.setStartDate(LocalDateTime.now());
+                token1.setStatus(1);
+                token1.setToken(token);
+                jwtTokenRepo.save(token1);
+                accessDto.setRoleId(user.getRoleId());
+                accessDto.setToken(token);
+                accessDto.setUserId(user.getId());
+                accessDto.setRoleName(user.getRoles().getRoleName());
+                accessDto.setEmployeeName(user.getUsername());
+                accessDto.setName(user.getName());
+                return ResponseEntity.ok(accessDto);
+            } else {
+                return ResponseEntity.badRequest().body("User is not Active");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(401).body("Authentication failed");
+            System.out.println(e);
         }
-        return null;
+        return ResponseEntity.status(401).body("Authentication failed");
     }
 
 
@@ -117,26 +135,29 @@ public class LoginController {
 
 
     @PutMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException, IllegalAccessException {
+    public ResponseEntity<?> logout(HttpServletRequest request) throws
+            IOException, ServletException, IllegalAccessException {
         try {
-            String header = req.getHeader("Authorization");
-            String token = getTokenFromRequest(req);
+            String authorization = request.getHeader("Authorization");
+            HttpHeaders headers = new HttpHeaders();
+            headers.set(HttpHeaders.AUTHORIZATION, authorization);
+            String token = getTokenFromRequest(request);
             if (token != null) {
                 JwtToken token1 = jwtTokenRepo.findByToken(token);
                 token1.setEndDate(LocalDateTime.now());
                 token1.setStatus(0);
                 jwtTokenRepo.save(token1);
-                HttpSession session = req.getSession(false);
-                if (session != null) {
-                    session.invalidate();
-                }
-                return ResponseEntity.ok("Logout Sucess");
+//                HttpSession session = req.getSession(false);
+//                if (session != null) {
+//                    session.invalidate();
+//                }
+                return ResponseEntity.ok("\"Logout Sucess\"");
             } else {
-                return ResponseEntity.badRequest().body("Token not found");
+                return ResponseEntity.badRequest().body("\"Token not found\"");
             }
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Logout failed");
+            return ResponseEntity.badRequest().body("\"Logout failed\"");
         }
     }
 
@@ -159,8 +180,12 @@ public class LoginController {
         try {
 
             ResponseEntity<?> valid = validator.valid(user);
+            ResponseEntity<?> exists = exitsData.exists(user);
             if (valid != null) {
                 return ResponseEntity.badRequest().body(Objects.requireNonNull(valid.getBody()));
+            }
+            if (exists != null) {
+                return ResponseEntity.badRequest().body(Objects.requireNonNull(exists.getBody()));
             }
 
 //            Role role = user.getRoles();
@@ -170,25 +195,25 @@ public class LoginController {
 //            EmployeeDto employeeDto=new EmployeeDto();
 //            employeeDt
             if (roleDetails.get().getRoleName().equals("EMPLOYEE")) {
-                //employeeService.reg(user);
                 Employee employee = new Employee();
                 employee.setUserId(user.getId());
-                employee.setName(user.getUsername());
+                employee.setName(user.getName());
                 employee.setEmailAddress(user.getEmail());
                 employee.setRole(roleId);
                 employee.setStatus(user.getStatus());
                 System.out.println(employee);
                 employeeService.createRegistartionEmployee(employee);
-
-            } else {
-                EmployeeDto employeeDto = new EmployeeDto();
-                employeeDto.setUserId(user.getId());
-                employeeDto.setName((user.getUsername()));
-                employeeDto.setEmailAddress(user.getEmail());
-                employeeDto.setRole(roleId);
-                employeeDto.setStatus(user.getStatus());
-                employeeService.createEmployee(employeeDto, request, null, null);
             }
+
+//            } else {
+//                EmployeeDto employeeDto = new EmployeeDto();
+//                employeeDto.setUserId(user.getId());
+//                employeeDto.setName((user.getUsername()));
+//                employeeDto.setEmailAddress(user.getEmail());
+//                employeeDto.setRole(roleId);
+//                employeeDto.setStatus(user.getStatus());
+//                employeeService.createEmployee(employeeDto, request, null, null);
+//            }
             // }
 
             return ResponseEntity.ok("\"User is Register successfull\"  ");
@@ -215,4 +240,19 @@ public class LoginController {
         }
 
     }
+
+
+//    @GetMapping("/users")
+//    public ResponseEntity<?> getAllUser() {
+//        try {
+//
+//
+//            List<User> usersWithIdAndName = userService.getUsersWithIdAndName();
+//            return ResponseEntity.status(HttpStatus.OK).body(usersWithIdAndName);
+//        } catch (Exception e) {
+//            System.out.println(e);
+//            return null;
+//        }
+//
+//    }
 }

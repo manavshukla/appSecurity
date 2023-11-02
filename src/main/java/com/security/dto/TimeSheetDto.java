@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class TimeSheetDto {
 
     private String timesheetId;
+    private String employeeName;
     private String employeeId;
     private String workDoneOn;
     private Float workTime;

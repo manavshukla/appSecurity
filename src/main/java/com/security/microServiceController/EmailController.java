@@ -27,7 +27,7 @@ public class EmailController {
             return ResponseEntity.ok().body("\"Email Send Successfully\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not added");
+            return ResponseEntity.badRequest().body("\"Not added\"");
         }
     }
 }

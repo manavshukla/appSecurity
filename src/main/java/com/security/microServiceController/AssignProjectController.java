@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 @CrossOrigin("*")
 @RequestMapping("/assignProject")
 public class AssignProjectController {
-
-
     private final AssignProjectService assignProjectService;
 
 
@@ -27,12 +25,12 @@ public class AssignProjectController {
     @PostMapping("/create")
     public ResponseEntity<?> projectCreate(@RequestBody AssignProjectDto assignProjectDto, HttpServletRequest request) {
         try {
-
             assignProjectService.create(assignProjectDto, request);
-            return ResponseEntity.ok().body("\"assignProject Created\"");
+            return ResponseEntity.ok().body(assignProjectDto);
+            //TODO "\"assignProject Created\""
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not created");
+            return ResponseEntity.badRequest().body("\"Not created\"");
         }
     }
 
@@ -44,7 +42,7 @@ public class AssignProjectController {
             return ResponseEntity.ok().body(projectData);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
 
@@ -54,10 +52,11 @@ public class AssignProjectController {
         try {
 
             assignProjectService.updateAssignProject(assignProjectDto, id, request);
-            return ResponseEntity.ok().body("\"project Update\"");
+            return ResponseEntity.ok().body(assignProjectDto);
+            //TODO "\"project Update\""
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("not update");
+            return ResponseEntity.badRequest().body("\"not update\"");
         }
     }
 
@@ -66,10 +65,10 @@ public class AssignProjectController {
         try {
 
             assignProjectService.deleteProject(id, request);
-            return ResponseEntity.ok().body("project Delete");
+            return ResponseEntity.ok().body("\"project Delete\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not delete");
+            return ResponseEntity.badRequest().body("\"Not delete\"");
         }
     }
 
@@ -81,11 +80,11 @@ public class AssignProjectController {
             if (projectById != null) {
                 return ResponseEntity.ok().body(projectById);
             } else {
-                return ResponseEntity.badRequest().body("id not found");
+                return ResponseEntity.badRequest().body("\"id not found\"");
             }
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not found");
+            return ResponseEntity.badRequest().body("\"Not found\"");
         }
     }
 
@@ -101,7 +100,7 @@ public class AssignProjectController {
             return ResponseEntity.ok().body(projectData);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
 
@@ -117,7 +116,17 @@ public class AssignProjectController {
             return ResponseEntity.ok().body(projectData);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
+
+
+
+
+
+
+
+
+
+
 }

@@ -1,6 +1,5 @@
 package com.security.microService;
 
-import com.security.constants.EndPointEnum;
 import com.security.dto.CreateLeaveDto;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +47,20 @@ public class LeaveManageService {
         }
     }
 
-    public void createLeave(CreateLeaveDto createLeaveDto, HttpServletRequest request, String token) {
+    public String getLeaveByEmployeeId(int page, int pageSize, String employeeId) {
         try {
+
+            String url = api + "emp/" + employeeId + "?page=" + page + "&pageSize=" + pageSize;
+            return restTemplate.getForObject(url, String.class);
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    public ResponseEntity<?> createLeave(CreateLeaveDto createLeaveDto, HttpServletRequest request, String token) {
+        try {
+            String msg = "";
             String authorization = request.getHeader("Authorization");
             String url = api + "createLeave";
             HttpHeaders headers = new HttpHeaders();
@@ -57,9 +68,12 @@ public class LeaveManageService {
             headers.set(HttpHeaders.AUTHORIZATION, token);
             HttpEntity<CreateLeaveDto> createEntity = new HttpEntity<>(createLeaveDto, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(url, HttpMethod.POST, createEntity, String.class);
+            return responseEntity;
         } catch (Exception e) {
             System.out.println(e);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+
     }
 
     public void updateLeave(CreateLeaveDto createLeaveDto, String id) {
@@ -87,27 +101,31 @@ public class LeaveManageService {
         }
     }
 
-    public boolean approveLeave(String id) {
+    public void approveLeave(String id, CreateLeaveDto createLeaveDto) {
         try {
 
-            String url = api + id + "approve";
-            restTemplate.put(url, new ObjectId(id));
-            return true;
+            String url = api + id + "/approve";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<CreateLeaveDto> requestEntity = new HttpEntity<>(createLeaveDto, headers);
+            restTemplate.put(url, requestEntity, CreateLeaveDto.class);
+
         } catch (Exception e) {
             System.out.println(e);
-            return false;
+
         }
     }
 
-    public boolean rejectLeave(String id) {
+    public void rejectLeave(String id, CreateLeaveDto createLeaveDto) {
         try {
+            String url = api + id + "/reject";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<CreateLeaveDto> requestEntity = new HttpEntity<>(createLeaveDto, headers);
+            restTemplate.put(url, requestEntity, CreateLeaveDto.class);
 
-            String url = api + id + "reject";
-            restTemplate.put(url, new ObjectId());
-            return true;
         } catch (Exception e) {
             System.out.println(e);
-            return false;
         }
     }
 

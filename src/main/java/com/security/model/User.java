@@ -45,6 +45,11 @@ public class User implements UserDetails {
     @DBRef
     private Role roles;
     private Integer status;
+    private String name;
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return firstName + " " + lastName;

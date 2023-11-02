@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/call")
@@ -84,7 +85,7 @@ public class EmployeeController {
             return ResponseEntity.ok().body(customResponse);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Failed to create");
+            return ResponseEntity.badRequest().body("\"Failed to create\"");
         }
     }
 
@@ -96,7 +97,7 @@ public class EmployeeController {
             String employeeData = employeeService.getEmployeeData(page, pageSize);
             return ResponseEntity.ok().body(employeeData);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to load");
+            return ResponseEntity.badRequest().body("\"Failed to load\"");
         }
     }
 
@@ -162,22 +163,33 @@ public class EmployeeController {
 //            } else {
 //                fileDto.setPanCard(panCard);
 //            }
-
+//            User user = new User();
+//            user.setFirstName(employeeDto.getName());
+//            user.setEmail(employeeDto.getEmailAddress());
+//            user.setUsername(employeeDto.getName());
+//            user.setRoleId(employeeDto.getRole());
+//            user.setRoles(Role.createWithId(employeeDto.getRole()));
+//            Optional<EmployeeDto> user1 = Optional.ofNullable(employeeService.getEmployeeByUserId(id));
+//            employeeDto.setUserId(user1.get().getUserId());
             employeeService.updateEmployee(employeeDto, fileDto, id, systemList);
+//            CustomResponse response = new CustomResponse();
+//            response.setMessage("\"Employee Update\"");
+//            response.setEmployeeDto(user1.get());
             return ResponseEntity.ok().body("\"Employee Update\"");
+
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Employee not update");
+            return ResponseEntity.badRequest().body("\"Employee not update\"");
         }
     }
 
-    @DeleteMapping("/employee-delete/{id}")
+    @PutMapping("/employee-delete/{id}")
     public ResponseEntity<?> deleteEmployee(@PathVariable String id) {
         try {
 
             employeeService.deleteEmployee(id);
             return ResponseEntity.ok().body("\"Employee Delete sucess\"");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to delete");
+            return ResponseEntity.badRequest().body("\"Failed to delete\"");
         }
     }
 
@@ -192,7 +204,7 @@ public class EmployeeController {
                 return ResponseEntity.badRequest().body("\"Id not Found\"");
             }
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Not found");
+            return ResponseEntity.badRequest().body("\"Not found\"");
         }
     }
 
@@ -204,7 +216,7 @@ public class EmployeeController {
             String employeeData = employeeService.getEmployeeByName();
             return ResponseEntity.ok().body(employeeData);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to load");
+            return ResponseEntity.badRequest().body("\"Failed to load\"");
         }
     }
 
@@ -216,7 +228,7 @@ public class EmployeeController {
             EmployeeDto employeeData = employeeService.getEmployeeByUserId(id);
             return ResponseEntity.ok().body(employeeData);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to load");
+            return ResponseEntity.badRequest().body("\"Failed to load\"");
         }
     }
 

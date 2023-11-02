@@ -6,7 +6,7 @@ import lombok.Data;
 public class AccessDto {
 
     private String token;
-    private String employeeId;
+    private String name;
     private String userId;
     private String roleId;
     private String roleName;

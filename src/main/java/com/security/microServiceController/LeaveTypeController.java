@@ -29,7 +29,7 @@ public class LeaveTypeController {
             return ResponseEntity.ok().body(data);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
 
@@ -41,7 +41,7 @@ public class LeaveTypeController {
             return ResponseEntity.ok().body(data);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
 
@@ -53,7 +53,7 @@ public class LeaveTypeController {
             return ResponseEntity.ok().body("\"Leave Type  Create\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not created");
+            return ResponseEntity.badRequest().body("\"Not created\"");
         }
     }
 
@@ -65,7 +65,7 @@ public class LeaveTypeController {
             return ResponseEntity.ok().body("\"leave Request Update\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not update");
+            return ResponseEntity.badRequest().body("\"Not update\"");
         }
     }
 
@@ -78,7 +78,7 @@ public class LeaveTypeController {
             return ResponseEntity.ok().body("\"leave Type delete sucess\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not delete");
+            return ResponseEntity.badRequest().body("\"Not delete\"");
         }
     }
 
@@ -90,11 +90,11 @@ public class LeaveTypeController {
             if (leaveById != null) {
                 return ResponseEntity.ok().body(leaveById);
             } else {
-                return ResponseEntity.badRequest().body("id not found");
+                return ResponseEntity.badRequest().body("\"id not found\"");
             }
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not found");
+            return ResponseEntity.badRequest().body("\"Not found\"");
         }
     }
 }

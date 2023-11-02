@@ -9,7 +9,6 @@ import com.security.model.User;
 import com.security.repo.JwtTokenRepo;
 import com.security.repo.RoleRepo;
 import com.security.repo.UserRepo;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.security.SecureRandom;
 import java.util.*;
 
 @Service
@@ -124,14 +122,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String username, String password) {
+    public String login(String username, String password, String userId) {
         try {
 
             int status = 1;
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
+
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            return jwtTokenProvider.generateToken(userDetails, secretKey);
+            return jwtTokenProvider.generateToken(userDetails, secretKey, userId);
         } catch (Exception e) {
             System.out.println(e);
             return null;
@@ -167,13 +167,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsByUsername(String username) {
-        return false;
-    }
+    public List<User> getUsersWithIdAndName() {
+        return userRepo.findAll();
 
-    @Override
-    public boolean existsByEmail(String email) {
-        return false;
     }
 
     @Override

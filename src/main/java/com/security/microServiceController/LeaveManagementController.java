@@ -3,6 +3,7 @@ package com.security.microServiceController;
 import com.security.dto.CreateLeaveDto;
 import com.security.microService.LeaveManageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,26 +24,32 @@ public class LeaveManagementController {
     @GetMapping("/leave-data")
     public ResponseEntity<?> getLeaveData(@RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "5") int pageSize,
-                                          @RequestParam(defaultValue = "createdTime,dsc") String[] sort) {
+                                          @RequestParam(defaultValue = "createdOn,dsc") String[] sort) {
         try {
 
             String data = leaveManageService.getLeaveData(page, pageSize, sort);
             return ResponseEntity.ok().body(data);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
 
     @PostMapping("/create-leave")
     public ResponseEntity<?> createLeave(@RequestBody CreateLeaveDto createLeaveDto, String token, HttpServletRequest request) {
         try {
-            System.out.println(createLeaveDto.getEmployeeId());
-            leaveManageService.createLeave(createLeaveDto, request, token);
-            return ResponseEntity.ok().body("\"Leave Added Successfully\"");
+            ResponseEntity<?> leave = leaveManageService.createLeave(createLeaveDto, request, token);
+
+            System.out.println(leave.getBody());
+
+            if (leave.getStatusCode().is2xxSuccessful()) {
+                return ResponseEntity.ok().body("\"Leave Added Successfully\"");
+            } else {
+                return ResponseEntity.badRequest().body("\"Sorry,Yor are not eligible for apply for this leave\"");
+            }
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not added");
+            return ResponseEntity.badRequest().body("\"Not added\"");
         }
     }
 
@@ -54,7 +61,7 @@ public class LeaveManagementController {
             return ResponseEntity.ok().body("\"leave Request Update\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not update");
+            return ResponseEntity.badRequest().body("\"Not update\"");
         }
     }
 
@@ -67,31 +74,31 @@ public class LeaveManagementController {
             return ResponseEntity.ok().body("\"leave delete sucess\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not delete");
+            return ResponseEntity.badRequest().body("\"Not delete\"");
         }
     }
 
     @PutMapping("/{id}/leave-approve")
-    public ResponseEntity<?> approveLeave(@PathVariable String id) {
+    public ResponseEntity<?> approveLeave(@PathVariable String id, @RequestBody CreateLeaveDto createLeaveDto) {
         try {
 
-            boolean approveLeave = leaveManageService.approveLeave(id);
-            return ResponseEntity.ok().body("Leave approve");
+            leaveManageService.approveLeave(id, createLeaveDto);
+            return ResponseEntity.ok().body("\"Leave approve\"");
         } catch (Exception e) {
             System.out.println();
-            return ResponseEntity.badRequest().body("Not approve");
+            return ResponseEntity.badRequest().body("\"Not approve\"");
         }
     }
 
     @PutMapping("/{id}/leave-reject")
-    public ResponseEntity<?> rejectLeave(@PathVariable String id) {
+    public ResponseEntity<?> rejectLeave(@PathVariable String id, @RequestBody CreateLeaveDto createLeaveDto) {
         try {
 
-            boolean rejectLeave = leaveManageService.rejectLeave(id);
-            return ResponseEntity.ok().body("Reject Leave");
+            leaveManageService.rejectLeave(id, createLeaveDto);
+            return ResponseEntity.ok().body("\"Reject Leave\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Note reject");
+            return ResponseEntity.badRequest().body("\"Note reject\"");
         }
     }
 
@@ -104,11 +111,26 @@ public class LeaveManagementController {
             if (leaveById != null) {
                 return ResponseEntity.ok().body(leaveById);
             } else {
-                return ResponseEntity.badRequest().body("id not found");
+                return ResponseEntity.badRequest().body("\"id not found\"");
             }
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not found");
+            return ResponseEntity.badRequest().body("\"Not found\"");
+        }
+    }
+
+
+    @GetMapping("/leave-emp/{employeeId}")
+    public ResponseEntity<?> getLeaveByEmpId(@RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "3") int pageSize,
+                                             @PathVariable("employeeId") String employeeId) {
+        try {
+
+            String data = leaveManageService.getLeaveByEmployeeId(page, pageSize, employeeId);
+            return ResponseEntity.ok().body(data);
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
 }

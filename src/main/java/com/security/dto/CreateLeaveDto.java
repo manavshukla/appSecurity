@@ -14,6 +14,7 @@ public class CreateLeaveDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private String leaveTypeId;
+    private String employeeName;
 
     private String leaveType;
     private String description;
@@ -23,4 +24,5 @@ public class CreateLeaveDto {
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
     private Integer totalAvailableLeaves;
+    private String responseReason;
 }

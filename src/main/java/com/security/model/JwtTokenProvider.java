@@ -1,6 +1,7 @@
 package com.security.model;
 
 import com.security.repo.JwtTokenRepo;
+import com.security.repo.UserRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,16 +25,17 @@ public class JwtTokenProvider {
 
     @Autowired
     public JwtTokenProvider(JwtTokenRepo jwtTokenRepo) {
+
     }
 
-    public String generateToken(UserDetails userDetails, String key) {
+    public String generateToken(UserDetails userDetails, String key, String userId) {
         System.out.println(key);
         Map<String, Object> claims = new HashMap<>();
         Date now = new Date();
         Date expiryDate = new Date(System.currentTimeMillis() + jwtExpiration * 1000L);
         String jwt = Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(userId)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)

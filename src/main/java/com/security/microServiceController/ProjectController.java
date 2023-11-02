@@ -30,7 +30,7 @@ public class ProjectController {
             return ResponseEntity.ok().body("\"timesheet Created\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not created");
+            return ResponseEntity.badRequest().body("\"Not created\"");
         }
     }
 
@@ -44,7 +44,7 @@ public class ProjectController {
             return ResponseEntity.ok().body(projectData);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
 
@@ -59,7 +59,7 @@ public class ProjectController {
             return ResponseEntity.ok().body(projectData);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
 
@@ -71,7 +71,7 @@ public class ProjectController {
             return ResponseEntity.ok().body("\"project Update\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("not update");
+            return ResponseEntity.badRequest().body("\"not update\"");
         }
     }
 
@@ -80,10 +80,10 @@ public class ProjectController {
         try {
 
             projectService.deleteProject(id);
-            return ResponseEntity.ok().body("project Delete");
+            return ResponseEntity.ok().body("\"project Delete\"");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not delete");
+            return ResponseEntity.badRequest().body("\"Not delete\"");
         }
     }
 
@@ -95,11 +95,11 @@ public class ProjectController {
             if (projectById != null) {
                 return ResponseEntity.ok().body(projectById);
             } else {
-                return ResponseEntity.badRequest().body("id not found");
+                return ResponseEntity.badRequest().body("\"id not found\"");
             }
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Not found");
+            return ResponseEntity.badRequest().body("\"Not found\"");
         }
     }
 
@@ -112,7 +112,19 @@ public class ProjectController {
             return ResponseEntity.ok().body(allProjectList);
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.badRequest().body("Data not found");
+            return ResponseEntity.badRequest().body("\"Data not found\"");
+        }
+    }
+
+
+    @GetMapping("/project-title")
+    public ResponseEntity<?> getAllProjectTitle() {
+        try {
+            String allProjectList = projectService.getProjectTitle();
+            return ResponseEntity.ok().body(allProjectList);
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.badRequest().body("\"Data snot found\"");
         }
     }
 
