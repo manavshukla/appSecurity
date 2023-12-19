@@ -24,10 +24,10 @@ public class LeaveManagementController {
     @GetMapping("/leave-data")
     public ResponseEntity<?> getLeaveData(@RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "5") int pageSize,
-                                          @RequestParam(defaultValue = "createdOn,dsc") String[] sort) {
+                                          @RequestParam(defaultValue = "createdOn,desc") String sortBy) {
         try {
 
-            String data = leaveManageService.getLeaveData(page, pageSize, sort);
+            String data = leaveManageService.getLeaveData(page, pageSize, sortBy);
             return ResponseEntity.ok().body(data);
         } catch (Exception e) {
             System.out.println(e);
@@ -104,7 +104,7 @@ public class LeaveManagementController {
 
 
     @GetMapping("/leave-id/{id}")
-    public ResponseEntity<?> updateTimeSheet(@PathVariable String id) {
+    public ResponseEntity<?> leaveById(@PathVariable String id) {
         try {
 
             String leaveById = leaveManageService.getLeaveById(String.valueOf(id));
@@ -122,15 +122,29 @@ public class LeaveManagementController {
 
     @GetMapping("/leave-emp/{employeeId}")
     public ResponseEntity<?> getLeaveByEmpId(@RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "3") int pageSize,
-                                             @PathVariable("employeeId") String employeeId) {
+                                             @RequestParam(defaultValue = "5") int pageSize,
+                                             @PathVariable("employeeId") String employeeId,
+                                             @RequestParam(defaultValue = "createdOn,desc") String sortBy) {
         try {
 
-            String data = leaveManageService.getLeaveByEmployeeId(page, pageSize, employeeId);
+            String data = leaveManageService.getLeaveByEmployeeId(page, pageSize, employeeId, sortBy);
             return ResponseEntity.ok().body(data);
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.badRequest().body("\"Data not found\"");
         }
     }
+
+
+    @GetMapping("/searchByName")
+    public ResponseEntity<?> searchByName(@RequestParam String name) {
+        try {
+            String searchByName = leaveManageService.searchByName(name);
+            return ResponseEntity.ok().body(searchByName);
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.badRequest().body("\"Name not found\"");
+        }
+    }
+
 }

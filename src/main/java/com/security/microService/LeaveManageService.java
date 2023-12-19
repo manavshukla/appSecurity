@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 
 @Service
 public class LeaveManageService {
@@ -36,10 +35,10 @@ public class LeaveManageService {
 
     }
 
-    public String getLeaveData(int page, int pageSize, String[] sort) {
+    public String getLeaveData(int page, int pageSize, String sortBy) {
         try {
 
-            String url = api + "getAllLeaves?page=" + page + "&pageSize=" + pageSize + "&sort=" + Arrays.toString(sort);
+            String url = api + "getAllLeaves?page=" + page + "&pageSize=" + pageSize + "&sortBy=" + sortBy;
             return restTemplate.getForObject(url, String.class);
         } catch (Exception e) {
             System.out.println(e);
@@ -47,10 +46,10 @@ public class LeaveManageService {
         }
     }
 
-    public String getLeaveByEmployeeId(int page, int pageSize, String employeeId) {
+    public String getLeaveByEmployeeId(int page, int pageSize, String employeeId, String sortBy) {
         try {
 
-            String url = api + "emp/" + employeeId + "?page=" + page + "&pageSize=" + pageSize;
+            String url = api + "emp/" + employeeId + "?page=" + page + "&pageSize=" + pageSize + "&sortBy=" + sortBy;
             return restTemplate.getForObject(url, String.class);
         } catch (Exception e) {
             System.out.println(e);
@@ -133,6 +132,16 @@ public class LeaveManageService {
         try {
 
             String url = api + "leave/" + id;
+            return restTemplate.getForObject(url, String.class);
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    public String searchByName(String name) {
+        try {
+            String url = api + "search";
             return restTemplate.getForObject(url, String.class);
         } catch (Exception e) {
             System.out.println(e);

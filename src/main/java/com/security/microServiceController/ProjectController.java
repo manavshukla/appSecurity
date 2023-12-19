@@ -35,9 +35,9 @@ public class ProjectController {
     }
 
     @GetMapping("/project-data")
-    public ResponseEntity<?> getProjectData(@RequestParam(defaultValue = "0") int page,
+        public ResponseEntity<?> getProjectData(@RequestParam(defaultValue = "0") int page,
                                             @RequestParam(defaultValue = "5") int size,
-                                            @RequestParam(defaultValue = "description") String sortBy) {
+                                            @RequestParam(defaultValue = "createdate") String sortBy) {
         try {
 
             String projectData = projectService.getProjectData(page, size, sortBy);

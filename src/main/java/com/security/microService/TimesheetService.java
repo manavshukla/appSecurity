@@ -43,7 +43,7 @@ public class TimesheetService {
     public String getLeaveData(int page, int pageSize, String sortBy) {
         try {
 
-            String url = api + "?page=" + page + "&pageSize=" + pageSize + "&sortBy" + sortBy;
+            String url = api + "?page=" + page + "&pageSize=" + pageSize + "&sortBy=" + sortBy;
             return restTemplate.getForObject(url, String.class);
         } catch (Exception e) {
             System.out.println(e);
@@ -88,10 +88,10 @@ public class TimesheetService {
         }
     }
 
-    public String getTimesheetByEmpId(String employeeId, int page, int pageSize) {
+    public String getTimesheetByEmpId(String employeeId, int page, int pageSize, String sortBy) {
         System.out.println(employeeId);
         try {
-            String url = api + "/findByEmpId/" + employeeId + "?page=" + page + "&pageSize=" + pageSize;
+            String url = api + "/findByEmpId/" + employeeId + "?page=" + page + "&pageSize=" + pageSize + "&sortBy=" + sortBy;
             return restTemplate.getForObject(url, String.class);
 
 

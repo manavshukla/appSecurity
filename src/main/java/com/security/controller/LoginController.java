@@ -197,6 +197,7 @@ public class LoginController {
             if (roleDetails.get().getRoleName().equals("EMPLOYEE")) {
                 Employee employee = new Employee();
                 employee.setUserId(user.getId());
+                employee.setPhoneNo(user.getPhoneNumber());
                 employee.setName(user.getName());
                 employee.setEmailAddress(user.getEmail());
                 employee.setRole(roleId);

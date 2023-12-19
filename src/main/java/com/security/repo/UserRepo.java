@@ -13,6 +13,8 @@ public interface UserRepo extends MongoRepository<User, String> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByPhoneNumber(Long number);
+
     @Query(value = "{'userId': ?0,'status':?0}")
     int findStatusByUserId(String userId, Integer status);
 

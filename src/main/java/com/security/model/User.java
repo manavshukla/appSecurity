@@ -36,6 +36,9 @@ public class User implements UserDetails {
     @NotBlank
     @Indexed(unique = true)
     private String email;
+
+    @Indexed(unique = true)
+    private Long phoneNumber;
     @NotBlank
     @Indexed(unique = true)
     private String username;

@@ -18,7 +18,7 @@ public class EmployeeDto {
     private String userId;
     private String name;
     private String emailAddress;
-    private Long phoneNo;
+    private String phoneNo;
     private Long emergencyContactNo;
     private String workingWith;
     private String reportTo;

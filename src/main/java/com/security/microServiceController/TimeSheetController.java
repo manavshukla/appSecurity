@@ -93,9 +93,14 @@ public class TimeSheetController {
     @GetMapping("/timesheet-empId/{id}")
     public ResponseEntity<?> getTimesheetByEmpId(@PathVariable("id") String employeeId,
                                                  @RequestParam(defaultValue = "0") int page,
-                                                 @RequestParam(defaultValue = "3") int pageSize) {
+                                                 @RequestParam(defaultValue = "3") int pageSize,
+                                                 @RequestParam(defaultValue = "") String sortBy
 
-        String timesheetByEMpId = timesheetService.getTimesheetByEmpId(employeeId, page, pageSize);
+    ) {
+
+
+        System.out.println(sortBy);
+        String timesheetByEMpId = timesheetService.getTimesheetByEmpId(employeeId, page, pageSize, sortBy);
         if (timesheetByEMpId != null) {
             return ResponseEntity.ok().body(timesheetByEMpId);
         } else {

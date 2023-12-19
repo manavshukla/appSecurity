@@ -25,6 +25,10 @@ public class CustomValidator {
             if (email == null || email.equalsIgnoreCase("")) {
                 return ResponseEntity.badRequest().body("Email is Required");
             }
+            Long number = user.getPhoneNumber();
+            if (number == null || email.equalsIgnoreCase("")) {
+                return ResponseEntity.badRequest().body("PhoneNumber is Required");
+            }
             String username = user.getUsername();
             if (username == null || username.equalsIgnoreCase("")) {
                 return ResponseEntity.badRequest().body("Username is Required");

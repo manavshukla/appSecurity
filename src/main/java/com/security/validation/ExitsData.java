@@ -22,6 +22,9 @@ public class ExitsData {
             if (userRepo.existsByEmail(user.getEmail())) {
                 return ResponseEntity.badRequest().body("Email already exists");
             }
+            if (userRepo.existsByPhoneNumber(user.getPhoneNumber())) {
+                return ResponseEntity.badRequest().body("Phonenumber already exists");
+            }
 
             if (userRepo.existsByUsername(user.getUsername())) {
                 return ResponseEntity.badRequest().body("Username already exists");

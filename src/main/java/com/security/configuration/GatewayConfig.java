@@ -43,7 +43,7 @@ public class GatewayConfig {
                         .build(),
                 Route.async()
                         .id("route5")
-                        .uri("http://192.168.1.27:8080/")
+                        .uri("http://192.168.1.9:8081/")
                         .predicate(exchange -> exchange.getRequest().getPath().toString().startsWith("/project/**"))
                         .build());
     }
